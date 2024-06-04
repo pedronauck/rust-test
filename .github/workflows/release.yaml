@@ -64,9 +64,6 @@ jobs:
   changelog:
     runs-on: ubuntu-latest
     needs: setup
-    outputs:
-      commit_message: ${{ steps.save-outputs.outputs.commit_message }}
-      release_file: ${{ steps.save-outputs.outputs.release_file }}
 
     steps:
       - name: Checkout code
@@ -80,49 +77,27 @@ jobs:
           prerelease: ${{ needs.setup.outputs.prerelease }}
           devrelease: ${{ needs.setup.outputs.devrelease }}
           branch: ${{ needs.setup.outputs.branch }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          push: false
+          commit: false
 
       - name: Save outputs
         id: save-outputs
         run: |
           version=${{ env.REVISION }}
           commit_message="ci(bump): release ${version}"
-          release_file="release-${{ env.REVISION }}"
+          release_file="release-${version}"
 
           cp body.md ${release_file}.md
-          echo "version=${version}" >> $GITHUB_OUTPUT
           echo "commit_message=${commit_message}" >> $GITHUB_OUTPUT
           echo "release_file=${release_file}" >> $GITHUB_OUTPUT
-
-      - name: Cache Release File
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ steps.save-outputs.outputs.release_file }}
-          path: ${{ steps.save-outputs.outputs.release_file }}.md
-
-  create_pr:
-    runs-on: ubuntu-latest
-    needs: changelog
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Download Release File
-        uses: actions/download-artifact@v4
-        with:
-          name: ${{ needs.changelog.outputs.release_file }}
-      - run: |
-          cat ${{ needs.changelog.outputs.release_file }}.md
-          echo "${{ toJSON(env)}}"
 
       - name: Create Pull Request
         id: cpr
         uses: peter-evans/create-pull-request@v6
         with:
-          commit-message: ${{ needs.changelog.outputs.commit_message }}
-          title: ${{ needs.changelog.outputs.commit_message }}
-          body-path: ${{ needs.changelog.outputs.release_file }}.md
+          commit-message: ${{ steps.save-outputs.outputs.commit_message }}
+          title: ${{ steps.save-outputs.outputs.commit_message }}
+          body-path: ${{ steps.save-outputs.outputs.release_file }}.md
           branch: ${{ needs.setup.outputs.branch }}
 
       - name: Check outputs
