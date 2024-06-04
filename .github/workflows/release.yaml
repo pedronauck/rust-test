@@ -29,6 +29,7 @@ jobs:
     outputs:
       prerelease: ${{ steps.set-vars.outputs.prerelease }}
       branch: ${{ steps.set-branch.outputs.branch }}
+      changelog: ${{ steps.set-branch.outputs.changelog }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -47,9 +48,8 @@ jobs:
         id: set-vars
         run: |
           type=${{ env.RELEASE_TYPE }}
-          if [[ "${type}" != "stable" ]]; then
-            echo "prerelease=${type}" >> $GITHUB_OUTPUT
-          fi
+          echo "prerelease=$([[ "$type" != "stable" ]] && echo "$type" || echo "")" >> $GITHUB_OUTPUT
+          echo "changelog=$([[ "$type" == "stable" ]] && echo "true" || echo "false")" >> $GITHUB_OUTPUT
 
   changelog:
     runs-on: ubuntu-latest
@@ -59,13 +59,12 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - run: mkdir tmp
 
       - id: cz
         name: Create bump and changelog
         uses: commitizen-tools/commitizen-action@master
         with:
-          changelog_increment_filename: ./tmp/body.md
+          changelog: ${{ needs.setup.outputs.changelog }}
           prerelease: ${{ needs.setup.outputs.prerelease }}
           push: false
           commit: false
