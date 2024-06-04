@@ -44,7 +44,8 @@ jobs:
         run: |
           type=${{ env.RELEASE_TYPE }}
           id=${{ env.RELEASE_ID }}
-          echo "${{ toJSON({ inputs: inputs, env: env })}}"
+          echo "${{ toJSON(inputs)}}"
+          echo "${{ toJSON(env)}}"
           echo "RELEASE_BRANCH=release/${type}-${id}" >> $GITHUB_ENV
 
       - name: Check for pre-release configuration
