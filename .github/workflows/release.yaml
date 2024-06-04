@@ -63,6 +63,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+      - run: mkdir tmp
 
       - id: cz
         name: Create bump and changelog
