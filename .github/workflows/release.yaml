@@ -12,6 +12,9 @@ permissions:
   contents: write
   pull-requests: write
 
+env:
+  RELEASE_BRANCH: bump-release/main
+
 jobs:
   setup:
     runs-on: ubuntu-latest
@@ -45,7 +48,6 @@ jobs:
       version: ${{ steps.save-outputs.outputs.version }}
       changelog: ${{ steps.save-outputs.outputs.changelog }}
       commit_message: ${{ steps.save-outputs.outputs.commit_message }}
-      branch: ${{ steps.save-outputs.outputs.branch }}
 
     steps:
       - name: Checkout code
@@ -58,6 +60,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           changelog_increment_filename: body.md
           prerelease: ${{ needs.setup.outputs.prerelease }}
+          branch: ${{ env.RELEASE_BRANCH }}
 
       - name: Save outputs
         id: save-outputs
@@ -65,12 +68,10 @@ jobs:
           version=${{ steps.cz.outputs.version }}
           changelog=$(< body.md)
           commit_message="ci(bump): release ${version}"
-          branch="release-${{ steps.cz.outputs.version }}"
 
           echo "version=${version}" >> $GITHUB_OUTPUT
           echo "changelog=${changelog}" >> $GITHUB_OUTPUT
           echo "commit_message=${commit_message}" >> $GITHUB_OUTPUT
-          echo "branch=${branch}" >> $GITHUB_OUTPUT
 
   create_pr:
     runs-on: ubuntu-latest
@@ -88,7 +89,7 @@ jobs:
           title: Release ${{ needs.changelog.outputs.version }}
           body: |
             ${{ needs.changelog.outputs.changelog }}
-          branch: ${{ needs.changelog.outputs.branch }}
+          branch: ${{ env.RELEASE_BRANCH }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
