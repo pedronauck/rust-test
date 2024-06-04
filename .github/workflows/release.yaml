@@ -30,6 +30,7 @@ jobs:
     outputs:
       prerelease: ${{ steps.set-vars.outputs.prerelease }}
       devrelease: ${{ steps.set-vars.outputs.devrelease }}
+      branch: ${{ steps.set-branch.outputs.branch }}
 
     steps:
       - name: Checkout code
@@ -40,19 +41,19 @@ jobs:
           git config --global user.name "${{ github.actor }}"
           git config --global user.email "${{ github.actor }}@users.noreply.github.com"
 
-      - name: Setting Release Vars
+      - name: Setting branch name
         run: |
-          type=${{ env.RELEASE_TYPE }}
           id=${{ env.RELEASE_ID }}
+          type=${{ env.RELEASE_TYPE }}
           echo "${{ toJSON(inputs)}}"
           echo "${{ toJSON(env)}}"
-          echo "RELEASE_BRANCH=release/${type}-${id}" >> $GITHUB_ENV
+          echo "branch=release/${type}-${id}" >> $GITHUB_OUTPUT
 
       - name: Check for pre-release configuration
         id: set-vars
         run: |
-          type=${{ env.RELEASE_TYPE }}
           id=${{ env.RELEASE_ID }}
+          type=${{ env.RELEASE_TYPE }}
 
           if [[ "${type}" == "dev" ]]; then
             echo "devrelease=${id}" >> $GITHUB_OUTPUT
@@ -78,7 +79,7 @@ jobs:
           changelog_increment_filename: body.md
           prerelease: ${{ needs.setup.outputs.prerelease }}
           devrelease: ${{ needs.setup.outputs.devrelease }}
-          branch: ${{ env.RELEASE_BRANCH }}
+          branch: ${{ needs.setup.outputs.branch }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Save outputs
@@ -122,7 +123,7 @@ jobs:
           commit-message: ${{ needs.changelog.outputs.commit_message }}
           title: ${{ needs.changelog.outputs.commit_message }}
           body-path: ${{ needs.changelog.outputs.release_file }}.md
-          branch: ${{ env.RELEASE_BRANCH }}
+          branch: ${{ needs.setup.outputs.branch }}
 
       - name: Check outputs
         if: ${{ steps.cpr.outputs.pull-request-number }}
