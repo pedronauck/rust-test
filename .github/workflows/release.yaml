@@ -68,7 +68,7 @@ jobs:
         name: Create bump and changelog
         uses: commitizen-tools/commitizen-action@master
         with:
-          changelog_increment_filename: body.md
+          changelog_increment_filename: ./tmp/body.md
           prerelease: ${{ needs.setup.outputs.prerelease }}
           devrelease: ${{ needs.setup.outputs.devrelease }}
           branch: ${{ needs.setup.outputs.branch }}
@@ -78,13 +78,8 @@ jobs:
       - name: Save outputs
         id: save-outputs
         run: |
-          version=${{ env.REVISION }}
-          commit_message="ci(bump): release ${version}"
-          release_file="release-${version}"
-
-          cp body.md ${release_file}.md
+          commit_message="ci(bump): release ${{ env.REVISION }}"
           echo "commit_message=${commit_message}" >> $GITHUB_OUTPUT
-          echo "release_file=${release_file}" >> $GITHUB_OUTPUT
 
       - name: Create Pull Request
         id: cpr
@@ -92,8 +87,8 @@ jobs:
         with:
           commit-message: ${{ steps.save-outputs.outputs.commit_message }}
           title: ${{ steps.save-outputs.outputs.commit_message }}
-          body-path: ${{ steps.save-outputs.outputs.release_file }}.md
           branch: ${{ needs.setup.outputs.branch }}
+          body-path: ./tmp/body.md
 
       - name: Check outputs
         if: ${{ steps.cpr.outputs.pull-request-number }}
