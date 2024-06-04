@@ -65,7 +65,6 @@ jobs:
         with:
           changelog_increment_filename: ./tmp/body.md
           prerelease: ${{ needs.setup.outputs.prerelease }}
-          branch: ${{ needs.setup.outputs.branch }}
           push: false
           commit: false
 
