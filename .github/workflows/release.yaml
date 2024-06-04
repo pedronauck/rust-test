@@ -19,7 +19,7 @@ permissions:
   pull-requests: write
 
 env:
-  RELEASE_TYPE: ${{ inputs.release || toJSON('dev') }}
+  RELEASE_TYPE: ${{ inputs.release || toJSON('alpha') }}
   RELEASE_ID: ${{ github.event.pull_request.number || github.run_id }}
 
 jobs:
@@ -27,7 +27,6 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       prerelease: ${{ steps.set-vars.outputs.prerelease }}
-      devrelease: ${{ steps.set-vars.outputs.devrelease }}
       branch: ${{ steps.set-branch.outputs.branch }}
 
     steps:
@@ -47,12 +46,8 @@ jobs:
       - name: Check for pre-release configuration
         id: set-vars
         run: |
-          id=${{ env.RELEASE_ID }}
           type=${{ env.RELEASE_TYPE }}
-
-          if [[ "${type}" == "dev" ]]; then
-            echo "devrelease=${id}" >> $GITHUB_OUTPUT
-          elif [[ "${type}" == "rc" ]]; then
+          if [[ "${type}" != "stable" ]]; then
             echo "prerelease=${type}" >> $GITHUB_OUTPUT
           fi
 
@@ -71,7 +66,6 @@ jobs:
         with:
           changelog_increment_filename: ./tmp/body.md
           prerelease: ${{ needs.setup.outputs.prerelease }}
-          devrelease: ${{ needs.setup.outputs.devrelease }}
           branch: ${{ needs.setup.outputs.branch }}
           push: false
           commit: false
