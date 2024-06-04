@@ -25,6 +25,7 @@ jobs:
   lockfile:
     name: Validate Lockfile
     runs-on: ubuntu-latest
+    if: ${{ !startsWith(github.ref_name, 'release/') }}
     steps:
       - uses: actions/checkout@v4
       - name: Install Rust
