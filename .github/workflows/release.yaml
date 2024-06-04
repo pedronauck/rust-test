@@ -8,9 +8,7 @@ on:
       release:
         type: choice
         description: Release type to trigger
-        options:
-        - rc
-        - stable
+        options: [rc, stable]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
@@ -44,11 +42,7 @@ jobs:
       - name: Setting branch name
         id: set-branch
         run: |
-          id=${{ env.RELEASE_ID }}
-          type=${{ env.RELEASE_TYPE }}
-          echo "${{ toJSON(inputs)}}"
-          echo "${{ toJSON(env)}}"
-          echo "branch=release/${type}-${id}" >> $GITHUB_OUTPUT
+          echo "branch=release/${{ env.RELEASE_TYPE }}-${{ env.RELEASE_ID }}" >> $GITHUB_OUTPUT
 
       - name: Check for pre-release configuration
         id: set-vars
