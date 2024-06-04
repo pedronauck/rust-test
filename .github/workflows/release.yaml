@@ -13,13 +13,14 @@ permissions:
   pull-requests: write
 
 env:
-  RELEASE_BRANCH: bump-release/main
+  RELEASE_BRANCH: release/run-${{ github.run_id }}
 
 jobs:
   setup:
     runs-on: ubuntu-latest
     outputs:
-      prerelease: ${{ steps.set-prerelease.outputs.prerelease }}
+      prerelease: ${{ steps.set-vars.outputs.prerelease }}
+      devrelease: ${{ steps.set-vars.outputs.devrelease }}
 
     steps:
       - name: Checkout code
@@ -31,14 +32,17 @@ jobs:
           git config --global user.email "${{ github.actor }}@users.noreply.github.com"
 
       - name: Check for pre-release configuration
-        id: set-prerelease
+        id: set-vars
         run: |
           if [[ "${GITHUB_REF}" == "refs/heads/main" ]]; then
-            echo "prerelease=alpha" >> $GITHUB_OUTPUT
+            echo "prerelease=false" >> $GITHUB_OUTPUT
+            echo "devrelease=${{ github.run_id }}" >> $GITHUB_OUTPUT
           elif [[ "${GITHUB_REF}" == "refs/heads/staging" ]]; then
             echo "prerelease=rc" >> $GITHUB_OUTPUT
+            echo "devrelease=false" >> $GITHUB_RUN_ID
           else
             echo "prerelease=false" >> $GITHUB_OUTPUT
+            echo "devrelease=false" >> $GITHUB_RUN_ID
           fi
 
   changelog:
@@ -101,7 +105,7 @@ jobs:
         uses: peter-evans/create-pull-request@v6
         with:
           commit-message: ${{ needs.changelog.outputs.commit_message }}
-          title: Release ${{ needs.changelog.outputs.version }}
+          title: ${{ needs.changelog.outputs.commit_message }}
           body-path: ${{ needs.changelog.outputs.release_file }}.md
           branch: ${{ env.RELEASE_BRANCH }}
 
