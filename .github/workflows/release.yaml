@@ -21,7 +21,7 @@ permissions:
   pull-requests: write
 
 env:
-  RELEASE_TYPE: ${{ inputs.release || dev }}
+  RELEASE_TYPE: ${{ inputs.release || toJSON('dev') }}
   RELEASE_ID: ${{ github.event.pull_request.number || github.run_id }}
 
 jobs:
