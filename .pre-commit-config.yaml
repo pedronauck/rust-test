@@ -4,6 +4,8 @@ exclude: |
     CHANGELOG.md
   )$
 
+default_install_hook_types: [pre-commit, pre-push]
+
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.6.0
