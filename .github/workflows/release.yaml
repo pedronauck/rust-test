@@ -20,7 +20,6 @@ permissions:
 
 env:
   RELEASE_TYPE: ${{ inputs.release || toJSON('alpha') }}
-  RELEASE_ID: ${{ github.event.pull_request.number || github.run_id }}
 
 jobs:
   setup:
@@ -41,7 +40,7 @@ jobs:
       - name: Setting branch name
         id: set-branch
         run: |
-          echo "branch=release/${{ env.RELEASE_TYPE }}-${{ env.RELEASE_ID }}" >> $GITHUB_OUTPUT
+          echo "branch=release/${{ env.RELEASE_TYPE }}" >> $GITHUB_OUTPUT
 
       - name: Check for pre-release configuration
         id: set-vars
@@ -80,6 +79,7 @@ jobs:
         id: cpr
         uses: peter-evans/create-pull-request@v6
         with:
+          token: ${{ secrets.REPO_TOKEN }}
           commit-message: ${{ steps.save-outputs.outputs.commit_message }}
           title: ${{ steps.save-outputs.outputs.commit_message }}
           branch: ${{ needs.setup.outputs.branch }}
@@ -91,29 +91,29 @@ jobs:
           echo "Pull Request Number - ${{ steps.cpr.outputs.pull-request-number }}"
           echo "Pull Request URL - ${{ steps.cpr.outputs.pull-request-url }}"
 
-  release:
-    runs-on: ubuntu-latest
-    needs: changelog
-    if: github.ref == 'refs/heads/release'
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        with:
-          body_path: body.md
-          tag_name: ${{ env.REVISION }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  notify:
-    runs-on: ubuntu-latest
-    if: failure()
-
-    steps:
-      - name: Error Notification
-        run: |-
-          echo "An error occurred during the release process"
-          # Optionally, send a notification to Slack or email
+  # release:
+  #   runs-on: ubuntu-latest
+  #   needs: changelog
+  #   if: github.ref == 'refs/heads/release'
+  #
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
+  #
+  #     - name: Release
+  #       uses: softprops/action-gh-release@v1
+  #       with:
+  #         body_path: body.md
+  #         tag_name: ${{ env.REVISION }}
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #
+  # notify:
+  #   runs-on: ubuntu-latest
+  #   if: failure()
+  #
+  #   steps:
+  #     - name: Error Notification
+  #       run: |-
+  #         echo "An error occurred during the release process"
+  #  # Optionally, send a notification to Slack or email
