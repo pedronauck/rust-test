@@ -28,7 +28,7 @@ jobs:
     if: ${{ !startsWith(github.head_ref, 'release/') }}
     outputs:
       prerelease: ${{ steps.set-vars.outputs.prerelease }}
-      devrelease:  ${{ steps.set-vars.outputs.devrelease}}
+      devrelease: ${{ steps.set-vars.outputs.devrelease}}
       branch: ${{ steps.set-branch.outputs.branch }}
       changelog: ${{ steps.set-branch.outputs.changelog }}
     steps:
