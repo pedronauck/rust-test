@@ -105,8 +105,6 @@ jobs:
           title: Release ${{ needs.changelog.outputs.version }}
           body-path: ${{ needs.changelog.outputs.release_file }}.md
           branch: ${{ env.RELEASE_BRANCH }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Check outputs
         if: ${{ steps.cpr.outputs.pull-request-number }}
