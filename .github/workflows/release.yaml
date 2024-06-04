@@ -42,6 +42,7 @@ jobs:
           git config --global user.email "${{ github.actor }}@users.noreply.github.com"
 
       - name: Setting branch name
+        id: set-branch
         run: |
           id=${{ env.RELEASE_ID }}
           type=${{ env.RELEASE_TYPE }}
