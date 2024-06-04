@@ -32,6 +32,7 @@ jobs:
             echo "prerelease=rc" >> $GITHUB_OUTPUT
           else
             echo "prerelease=false" >> $GITHUB_OUTPUT
+          fi
 
   changelog:
     runs-on: ubuntu-latest
