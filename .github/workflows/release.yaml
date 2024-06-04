@@ -27,7 +27,7 @@ jobs:
         id: set-prerelease
         run: |
           if [[ "${GITHUB_REF}" == "refs/heads/main" ]]; then
-            echo "prerelease=nightly" >> $GITHUB_OUTPUT
+            echo "prerelease=alpha" >> $GITHUB_OUTPUT
           elif [[ "${GITHUB_REF}" == "refs/heads/staging" ]]; then
             echo "prerelease=rc" >> $GITHUB_OUTPUT
           else
