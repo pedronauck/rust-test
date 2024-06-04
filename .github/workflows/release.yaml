@@ -53,6 +53,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Git Switch
+        run: |
+          git switch -C ${{ env.RELEASE_BRANCH }}
+
       - id: cz
         name: Create bump and changelog
         uses: commitizen-tools/commitizen-action@master
