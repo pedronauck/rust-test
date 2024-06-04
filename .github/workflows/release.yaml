@@ -47,6 +47,7 @@ jobs:
     outputs:
       version: ${{ steps.save-outputs.outputs.version }}
       commit_message: ${{ steps.save-outputs.outputs.commit_message }}
+      release_file: ${{ steps.save-outputs.outputs.release_file }}
 
     steps:
       - name: Checkout code
@@ -68,9 +69,19 @@ jobs:
         run: |
           version=${{ steps.cz.outputs.version }}
           commit_message="ci(bump): release ${version}"
+          release_file="release-${{ steps.cz.outputs.version }}"
+
+          cp body.md ${release_file}.md
 
           echo "version=${version}" >> $GITHUB_OUTPUT
           echo "commit_message=${commit_message}" >> $GITHUB_OUTPUT
+          echo "release_file=${release_file}" >> $GITHUB_OUTPUT
+
+      - name: Cache Release File
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.save-outputs.outputs.release_file }}
+          path: ${{ steps.save-outputs.outputs.release_file }}.md
 
   create_pr:
     runs-on: ubuntu-latest
@@ -79,6 +90,12 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Download Release File
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ needs.changelog.outputs.release_file }}
+      - run: cat ${{ needs.changelog.outputs.release_file }}.md
 
       - name: Create Pull Request
         id: cpr
