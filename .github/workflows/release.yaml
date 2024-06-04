@@ -83,7 +83,6 @@ jobs:
           commit-message: ${{ steps.save-outputs.outputs.commit_message }}
           title: ${{ steps.save-outputs.outputs.commit_message }}
           branch: ${{ needs.setup.outputs.branch }}
-          body-path: ./tmp/body.md
 
       - name: Check outputs
         if: ${{ steps.cpr.outputs.pull-request-number }}
