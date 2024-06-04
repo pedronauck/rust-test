@@ -63,7 +63,7 @@ jobs:
         id: save-outputs
         run: |
           version=${{ steps.cz.outputs.version }}
-          changelog=$(cat body.md)
+          changelog=$(< body.md)
           commit_message="ci(bump): release ${version}"
           branch="release-${{ steps.cz.outputs.version }}"
 
