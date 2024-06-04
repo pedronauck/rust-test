@@ -3,6 +3,14 @@ name: Release
 on:
   push:
     branches: [main, staging, release]
+  workflow_dispatch:
+    inputs:
+      release:
+        type: choice
+        description: Release type to trigger
+        options:
+        - rc
+        - stable
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
@@ -13,7 +21,8 @@ permissions:
   pull-requests: write
 
 env:
-  RELEASE_BRANCH: release/run-${{ github.run_id }}
+  RELEASE_TYPE: ${{ inputs.release || "dev" }}
+  RELEASE_ID: ${{ github.event.pull_request.number || github.run_id }}
 
 jobs:
   setup:
@@ -31,13 +40,23 @@ jobs:
           git config --global user.name "${{ github.actor }}"
           git config --global user.email "${{ github.actor }}@users.noreply.github.com"
 
+      - name: Setting Release Vars
+        run: |
+          type=${{ env.RELEASE_TYPE }}
+          id=${{ env.RELEASE_ID }}
+          echo "${{ toJSON({ inputs: inputs, env: env })}}"
+          echo "RELEASE_BRANCH=release/${type}-${id}" >> $GITHUB_ENV
+
       - name: Check for pre-release configuration
         id: set-vars
         run: |
-          if [[ "${GITHUB_REF}" == "refs/heads/main" ]]; then
-            echo "devrelease=${{ github.run_id }}" >> $GITHUB_OUTPUT
-          elif [[ "${GITHUB_REF}" == "refs/heads/staging" ]]; then
-            echo "prerelease=rc" >> $GITHUB_OUTPUT
+          type=${{ env.RELEASE_TYPE }}
+          id=${{ env.RELEASE_ID }}
+
+          if [[ "${type}" == "dev" ]]; then
+            echo "devrelease=${id}" >> $GITHUB_OUTPUT
+          elif [[ "${type}" == "rc" ]]; then
+            echo "prerelease=${type}" >> $GITHUB_OUTPUT
           fi
 
   changelog:
@@ -58,6 +77,7 @@ jobs:
         with:
           changelog_increment_filename: body.md
           prerelease: ${{ needs.setup.outputs.prerelease }}
+          devrelease: ${{ needs.setup.outputs.devrelease }}
           branch: ${{ env.RELEASE_BRANCH }}
           push: false
           commit: false
@@ -70,7 +90,6 @@ jobs:
           release_file="release-${{ steps.cz.outputs.version }}"
 
           cp body.md ${release_file}.md
-
           echo "version=${version}" >> $GITHUB_OUTPUT
           echo "commit_message=${commit_message}" >> $GITHUB_OUTPUT
           echo "release_file=${release_file}" >> $GITHUB_OUTPUT
