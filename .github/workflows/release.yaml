@@ -46,7 +46,6 @@ jobs:
     needs: setup
     outputs:
       version: ${{ steps.save-outputs.outputs.version }}
-      changelog: ${{ steps.save-outputs.outputs.changelog }}
       commit_message: ${{ steps.save-outputs.outputs.commit_message }}
 
     steps:
@@ -68,11 +67,9 @@ jobs:
         id: save-outputs
         run: |
           version=${{ steps.cz.outputs.version }}
-          changelog=$(< body.md)
           commit_message="ci(bump): release ${version}"
 
           echo "version=${version}" >> $GITHUB_OUTPUT
-          echo "changelog=${changelog}" >> $GITHUB_OUTPUT
           echo "commit_message=${commit_message}" >> $GITHUB_OUTPUT
 
   create_pr:
@@ -89,8 +86,7 @@ jobs:
         with:
           commit-message: ${{ needs.changelog.outputs.commit_message }}
           title: Release ${{ needs.changelog.outputs.version }}
-          body: |
-            ${{ needs.changelog.outputs.changelog }}
+          body-path: body.md
           branch: ${{ env.RELEASE_BRANCH }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
