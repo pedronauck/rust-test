@@ -79,6 +79,7 @@ jobs:
           prerelease: ${{ needs.setup.outputs.prerelease }}
           devrelease: ${{ needs.setup.outputs.devrelease }}
           branch: ${{ env.RELEASE_BRANCH }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Save outputs
         id: save-outputs
