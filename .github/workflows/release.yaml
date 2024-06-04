@@ -7,7 +7,7 @@ on:
     inputs:
       release:
         type: choice
-        description: Release type to trigger
+        description: Release type to make
         options: [rc, stable]
 
 concurrency:
