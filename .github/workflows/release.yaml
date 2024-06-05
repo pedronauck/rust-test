@@ -20,12 +20,11 @@ permissions:
 
 env:
   RELEASE_ID: ${{ github.run_id }}
-  IS_LAST_COMMIT_BUMP: ${{ startsWith(github.event.head_commit.message, 'ci(bump):') }}
 
 jobs:
   setup:
     runs-on: ubuntu-latest
-    if: ${{ !startsWith(github.event.head_commit.message, 'ci(bump)') }}
+    if: ${{ !startsWith(github.event.head_commit.message, 'ci(bump)') && contains(github.ref_name, 'main') }}
     outputs:
       release_type: ${{ steps.set-release.outputs.type }}
       prerelease: ${{ steps.set-vars.outputs.prerelease }}
@@ -145,7 +144,7 @@ jobs:
           echo "Extracted version: v$version"
           git tag v${version}
           git tag -l
-          git push origin main --tags
+          git push origin --tags
 
   # release:
   #   runs-on: ubuntu-latest
