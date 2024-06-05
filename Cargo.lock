@@ -1229,7 +1229,7 @@ dependencies = [
 
 [[package]]
 name = "fuel-nats-stream"
-version = "0.0.2-dev.9376391706"
+version = "0.0.2-dev.9376498066"
 dependencies = [
  "anyhow",
  "async-nats",
