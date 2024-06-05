@@ -1,6 +1,6 @@
 [package]
 name = "fuel-data-systems"
-version = "0.0.1"
+version = "0.0.2-canary.0"
 
 [workspace]
 members = ["crates/nats-stream"]
