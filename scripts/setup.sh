@@ -15,5 +15,8 @@ check_command pre-commit
 
 # Install pre-commit hooks
 pre-commit install
-# Install cargo watch
+
+# Install cargo global crates
+cargo install cargo-edit
 cargo install cargo-watch
+cargo install knope

@@ -24,4 +24,7 @@ run:
 	cargo run --release
 
 setup:
-	./scripts/install.sh
+	./scripts/setup.sh
+
+changeset:
+	knope changeset
