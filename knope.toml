@@ -1,0 +1,62 @@
+[package]
+versioned_files = []
+changelog = "CHANGELOG.md"
+
+# Workflow to get the current version
+[[workflows]]
+name = "get-version"
+help_text = "Get the current version of the project"
+
+[[workflows.steps]]
+type = "Command"
+command = "echo \"$VERSION\""
+variables = { "$VERSION" = "Version" }
+
+# Workflow to create a new changeset
+[[workflows]]
+name = "changeset"
+
+[[workflows.steps]]
+type = "CreateChangeFile"
+
+# Workflow to create a new release
+[[workflows]]
+name = "prepare-release"
+
+[[workflows.steps]]
+type = "PrepareRelease"
+
+[[workflows.steps]]
+type = "Command"
+command = "git switch -c $RELEASE_BRANCH"
+shell = true
+
+[[workflows.steps]]
+type = "Command"
+command = "./scripts/update-version.sh $VERSION && git add ."
+variables = { "$VERSION" = "Version" }
+
+[[workflows.steps]]
+type = "Command"
+command = "git commit -m \"ci(bump): prepare release $VERSION\""
+variables = { "$VERSION" = "Version" }
+
+[[workflows.steps]]
+type = "Command"
+command = "git push --force --set-upstream origin $RELEASE_BRANCH"
+shell = true
+
+[[workflows.steps]]
+type = "CreatePullRequest"
+base = "main"
+variables = { "$VERSION" = "Version" }
+
+[workflows.steps.title]
+template = "chore: prepare release $VERSION"
+
+[workflows.steps.body]
+template = "This PR was created by Knope. Merging it will create a new release"
+
+[github]
+owner = "pedronauck"
+repo = "rust-test"
