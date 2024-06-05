@@ -8,14 +8,21 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
-  setup:
+  release:
+    name: Release
     runs-on: ubuntu-latest
-    outputs:
-      prerelease: ${{ steps.set-prerelease.outputs.prerelease }}
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      id-token: write
 
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Setup git user (for changelog step)
@@ -23,99 +30,177 @@ jobs:
           git config --global user.name "${{ github.actor }}"
           git config --global user.email "${{ github.actor }}@users.noreply.github.com"
 
-      - name: Check for pre-release configuration
-        id: set-prerelease
-        run: |
-          if [[ "${GITHUB_REF}" == "refs/heads/main" ]]; then
-            echo "prerelease=nightly" >> $GITHUB_OUTPUT
-          elif [[ "${GITHUB_REF}" == "refs/heads/staging" ]]; then
-            echo "prerelease=rc" >> $GITHUB_OUTPUT
-          else
-            echo "prerelease=false" >> $GITHUB_OUTPUT
+      - name: Setup Node.js
+        uses: ./.github/actions/node
 
-  changelog:
-    runs-on: ubuntu-latest
-    needs: setup
-    outputs:
-      version: ${{ steps.save-outputs.outputs.version }}
-      changelog: ${{ steps.save-outputs.outputs.changelog }}
-      commit_message: ${{ steps.save-outputs.outputs.commit_message }}
-      branch: ${{ steps.save-outputs.outputs.branch }}
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - id: cz
-        name: Create bump and changelog
-        uses: commitizen-tools/commitizen-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          changelog_increment_filename: body.md
-          prerelease: ${{ needs.setup.outputs.prerelease }}
-
-      - name: Save outputs
-        id: save-outputs
-        run: |
-          version=${{ steps.cz.outputs.version }}
-          changelog=$(cat body.md)
-          commit_message="ci(bump): release ${version}"
-          branch="release-${{ steps.cz.outputs.version }}"
-
-          echo "version=${version}" >> $GITHUB_OUTPUT
-          echo "changelog=${changelog}" >> $GITHUB_OUTPUT
-          echo "commit_message=${commit_message}" >> $GITHUB_OUTPUT
-          echo "branch=${branch}" >> $GITHUB_OUTPUT
-
-  create_pr:
-    runs-on: ubuntu-latest
-    needs: changelog
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - name: Semantic Release
+        run: make release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create Pull Request
         id: cpr
-        uses: peter-evans/create-pull-request@v3
+        uses: peter-evans/create-pull-request@v5
         with:
-          commit-message: ${{ needs.changelog.outputs.commit_message }}
-          title: Release ${{ needs.changelog.outputs.version }}
-          body: |
-            ${{ needs.changelog.outputs.changelog }}
-          branch: ${{ needs.changelog.outputs.branch }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.REPO_TOKEN }}
+          commit-message: 'ci(bump): update CHANGELOG.md'
+          title: 'chore(release): update generated assets'
+          body: Adds generated assets from last release(s)
+          branch: releases/update-notes
+          labels: semantic-release
 
-      - name: Check outputs
-        if: ${{ steps.cpr.outputs.pull-request-number }}
-        run: |
-          echo "Pull Request Number - ${{ steps.cpr.outputs.pull-request-number }}"
-          echo "Pull Request URL - ${{ steps.cpr.outputs.pull-request-url }}"
+  # setup:
+  #   runs-on: ubuntu-latest
+  #   if: ${{ !startsWith(github.event.head_commit.message, 'ci(bump)') || !contains(github.ref_name, 'main') }}
+  #   outputs:
+  #     release_type: ${{ steps.set-release.outputs.type }}
+  #     prerelease: ${{ steps.set-vars.outputs.prerelease }}
+  #     devrelease: ${{ steps.set-vars.outputs.devrelease}}
+  #     branch: ${{ steps.set-vars.outputs.branch }}
+  #     changelog: ${{ steps.set-vars.outputs.changelog }}
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
+  #
+  #     - name: Setup git user (for changelog step)
+  #       run: |
+  #         git config --global user.name "${{ github.actor }}"
+  #         git config --global user.email "${{ github.actor }}@users.noreply.github.com"
+  #
+  #     - name: Set release type
+  #       id: set-release
+  #       run: |
+  #         ref="${{ github.ref_name }}"
+  #
+  #         if [[ "${ref}" == "main" ]]; then
+  #           echo "type=dev" >> $GITHUB_OUTPUT
+  #         elif [[ "${ref}" == "staging" ]]; then
+  #           echo "type=rc" >> $GITHUB_OUTPUT
+  #         else
+  #           echo "type=stable" >> $GITHUB_OUTPUT
+  #         fi
+  #
+  #     - name: Check for pre-release configuration
+  #       id: set-vars
+  #       run: |
+  #         id=${{ env.RELEASE_ID }}
+  #         type=${{ steps.set-release.outputs.type }}
+  #
+  #         echo "branch=releases/${type}-${id}" >> $GITHUB_OUTPUT
+  #
+  #         if [[ "$type" == "stable" || "$type" == "rc" ]]; then
+  #           echo "changelog=true" >> $GITHUB_OUTPUT
+  #         fi
+  #
+  #         if [[ "$type" == "dev" ]]; then
+  #           echo "devrelease=${id}" >> $GITHUB_OUTPUT
+  #         fi
+  #
+  #         if [[ "$type" == "rc" ]]; then
+  #           echo "prerelease=rc" >> $GITHUB_OUTPUT
+  #         fi
+  #
+  # release_pr:
+  #   runs-on: ubuntu-latest
+  #   needs: setup
+  #
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
+  #
+  #     - id: cz
+  #       name: Create bump and changelog
+  #       uses: commitizen-tools/commitizen-action@master
+  #       with:
+  #         changelog: ${{ needs.setup.outputs.changelog || false }}
+  #         prerelease: ${{ needs.setup.outputs.prerelease }}
+  #         devrelease: ${{ needs.setup.outputs.devrelease }}
+  #         push: false
+  #         commit: false
+  #
+  #     - name: Save outputs
+  #       id: save-outputs
+  #       run: |
+  #         commit_message="ci(bump): release ${{ env.REVISION }}"
+  #         echo "commit_message=${commit_message}" >> $GITHUB_OUTPUT
+  #
+  #     - name: Bump cargo
+  #       run: cargo update --workspace
+  #
+  #     - name: Create Pull Request
+  #       id: cpr
+  #       uses: peter-evans/create-pull-request@v6
+  #       with:
+  #         token: ${{ secrets.REPO_TOKEN }}
+  #         commit-message: ${{ steps.save-outputs.outputs.commit_message }}
+  #         title: ${{ steps.save-outputs.outputs.commit_message }}
+  #         branch: ${{ needs.setup.outputs.branch }}
+  #
+  #     - name: Check outputs
+  #       if: ${{ steps.cpr.outputs.pull-request-number }}
+  #       run: |
+  #         echo "Pull Request Number - ${{ steps.cpr.outputs.pull-request-number }}"
+  #         echo "Pull Request URL - ${{ steps.cpr.outputs.pull-request-url }}"
+  #
+  # tag_version:
+  #   runs-on: ubuntu-latest
+  #   if: ${{ startsWith(github.event.head_commit.message, 'ci(bump)') }}
+  #
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
+  #       with:
+  #         fetch-depth: 0
+  #
+  #     - name: Create and push tag version
+  #       id: get-tag
+  #       run: |
+  #         msg="${{ github.event.head_commit.message }}"
+  #         version=$(echo "$msg" | grep -oE '([0-9]+\.){1,2}[0-9]+(-[a-zA-Z]+(\.[0-9]+)?)?(\+[a-zA-Z0-9]+)?')
+  #
+  #         if [ -z "$version" ]; then
+  #           echo "Error: No valid version found in the commit message"
+  #           exit 1
+  #         fi
+  #
+  #         if [[ "$version" == *"dev"* ]]; then
+  #           echo "Development version detected: v$version. Skipping tag creation."
+  #           exit 0
+  #         fi
+  #
+  #         if git rev-parse v${version} >/dev/null 2>&1; then
+  #           echo "Tag v${version} already exists. Skipping tag creation."
+  #           exit 0
+  #         fi
+  #
+  #         echo "Extracted version: v$version"
+  #         git tag v${version}
+  #         git tag -l
+  #         git push origin --tags
 
-  release:
-    runs-on: ubuntu-latest
-    needs: changelog
-    if: github.ref == 'refs/heads/release'
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        with:
-          body_path: body.md
-          tag_name: ${{ needs.changelog.outputs.version }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  notify:
-    runs-on: ubuntu-latest
-    if: failure()
-
-    steps:
-      - name: Error Notification
-        run: |-
-          echo "An error occurred during the release process"
-          # Optionally, send a notification to Slack or email
+  # release:
+  #   runs-on: ubuntu-latest
+  #   needs: changelog
+  #   if: github.ref == 'refs/heads/release'
+  #
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
+  #
+  #     - name: Release
+  #       uses: softprops/action-gh-release@v1
+  #       with:
+  #         body_path: body.md
+  #         tag_name: ${{ env.REVISION }}
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #
+  # notify:
+  #   runs-on: ubuntu-latest
+  #   if: failure()
+  #
+  #   steps:
+  #     - name: Error Notification
+  #       run: |-
+  #         echo "An error occurred during the release process"
+  #  # Optionally, send a notification to Slack or email
