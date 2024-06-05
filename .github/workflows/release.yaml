@@ -136,6 +136,11 @@ jobs:
             exit 1
           fi
 
+          if [[ "$version" == *"dev"* ]]; then
+            echo "Development version detected: v$version. Skipping tag creation."
+            exit 0
+          fi
+
           if git rev-parse v${version} >/dev/null 2>&1; then
             echo "Tag v${version} already exists. Skipping tag creation."
             exit 0
