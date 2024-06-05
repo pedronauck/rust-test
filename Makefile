@@ -11,17 +11,19 @@ dev-watch:
 	cargo watch -- cargo run
 
 fmt:
-	cargo fmt -- --check --color always
+	cargo +nightly fmt
 
 install:
 	cargo fetch
 
 lint:
 	pre-commit run --all-files
-	pre-commit run --hook-stage manual clippy --all-files
 
 run:
 	cargo run --release
 
 setup:
-	./scripts/install.sh
+	./scripts/setup.sh
+
+changeset:
+	knope changeset
