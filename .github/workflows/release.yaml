@@ -24,7 +24,7 @@ env:
 jobs:
   setup:
     runs-on: ubuntu-latest
-    if: ${{ !startsWith(github.event.head_commit.message, 'ci(bump)') && contains(github.ref_name, 'main') }}
+    if: ${{ !startsWith(github.event.head_commit.message, 'ci(bump)') || !contains(github.ref_name, 'main') }}
     outputs:
       release_type: ${{ steps.set-release.outputs.type }}
       prerelease: ${{ steps.set-vars.outputs.prerelease }}
