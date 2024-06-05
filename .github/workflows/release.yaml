@@ -60,7 +60,7 @@ jobs:
           id=${{ env.RELEASE_ID }}
           type=${{ steps.set-release.outputs.type }}
 
-          echo "branch=release/${type}-${id}" >> $GITHUB_OUTPUT
+          echo "branch=releases/${type}-${id}" >> $GITHUB_OUTPUT
 
           if [[ "$type" == "stable" || "$type" == "rc" ]]; then
             echo "changelog=true" >> $GITHUB_OUTPUT
