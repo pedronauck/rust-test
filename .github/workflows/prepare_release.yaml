@@ -1,0 +1,71 @@
+name: Create Release PR
+
+on:
+  push:
+    branches: [main, staging, release]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      release_type: ${{ steps.set-release.outputs.type }}
+      branch: ${{ steps.set-vars.outputs.branch }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set release type
+        id: set-release
+        run: |
+          ref="${{ github.ref_name }}"
+
+          if [[ "${ref}" == "main" ]]; then
+            echo "type=canary" >> $GITHUB_OUTPUT
+          elif [[ "${ref}" == "staging" ]]; then
+            echo "type=rc" >> $GITHUB_OUTPUT
+          else
+            echo "type=stable" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Check for pre-release configuration
+        id: set-vars
+        run: |
+          type="${{ steps.set-release.outputs.type }}"
+          echo "branch=releases/${type}" >> $GITHUB_OUTPUT
+
+  prepare-release:
+    if: "!startsWith(github.event.head_commit.message, 'ci(bump)')"
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.REPO_TOKEN }}
+
+      - name: Configure Git
+        run: |
+          git config --global user.name GitHub Actions
+          git config user.email github-actions@github.com
+
+      - uses: knope-dev/action@v2.1.0
+        with:
+          version: 0.16.0
+
+      - name: Run knope prepare release
+        env:
+          GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
+          RELEASE_BRANCH: ${{ needs.setup.outputs.branch }}
+        run: |-
+          type="${{ needs.setup.outputs.release_type }}"
+
+          if [[ "${type}" == "stable" ]]; then
+            knope prepare-release --verbose
+          else
+            knope prepare-release --verbose --prerelease-label ${type}
+          fi
