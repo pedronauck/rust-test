@@ -123,6 +123,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Create and push tag version
         id: get-tag
@@ -133,6 +135,11 @@ jobs:
           if [ -z "$version" ]; then
             echo "Error: No valid version found in the commit message"
             exit 1
+          fi
+
+          if git rev-parse v${version} >/dev/null 2>&1; then
+            echo "Tag v${version} already exists. Skipping tag creation."
+            exit 0
           fi
 
           echo "Extracted version: v$version"
