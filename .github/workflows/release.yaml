@@ -7,7 +7,7 @@ on:
 
 jobs:
   push_tag:
-    if: startsWith(github.head_ref, 'releases/') && github.event.pull_request.merged == true
+    if: startsWith(github.head_ref, 'changeset/') && github.event.pull_request.merged == true
     runs-on: ubuntu-latest
 
     steps:
