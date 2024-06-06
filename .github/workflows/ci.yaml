@@ -39,9 +39,27 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - name: Install Rust
         uses: dtolnay/rust-toolchain@nightly
         with:
           components: clippy, rustfmt
-      - uses: Swatinem/rust-cache@v2
-      - run: make lint
+
+      - name: Cache Rust dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-cargo-lint-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Install dependencies
+        uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-sort@1.0.9
+
+      - name: Running linting
+        run: make lint
