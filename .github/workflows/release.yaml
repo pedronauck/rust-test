@@ -3,31 +3,10 @@ name: Release
 on:
   pull_request:
     types: [closed]
-    branches: [main, staging, release]
+    branches: [main]
 
 jobs:
-  push_tag:
-    if: startsWith(github.head_ref, 'changeset/') && github.event.pull_request.merged == true
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          token: ${{ secrets.REPO_TOKEN }}
-
-      - uses: knope-dev/action@v2.1.0
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-      - run: |
-          version="${{ github.event.pull_request.body }}"
-          echo "version knope $(knope get-version)"
-          git tag "${version}"
-          git push origin main --tags
-          echo "Tag ${version} pushed successfully!"
-
   build-artifacts:
-    needs: [push_tag]
     env:
       archive_name: artifact
 
