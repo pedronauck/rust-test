@@ -41,15 +41,15 @@ repos:
         language: system
         types: [rust]
         pass_filenames: false
-      - id: lint-markdown
+      - id: fmt-markdown
         name: lint-markdown
         description: Lint config files using Prettier
-        entry: make lint-markdown
+        entry: make fmt-markdown
         language: system
         types: [markdown]
         pass_filenames: false
-      - id: rustfmt
-        name: rustfmt
+      - id: fmt-rust
+        name: fmt-rust
         description: Format files with cargo fmt.
         entry: make fmt-rust
         language: system
