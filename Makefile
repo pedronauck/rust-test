@@ -22,8 +22,8 @@ dev-watch:
 # Build & Release
 # ------------------------------------------------------------
 
-build:
-	cargo build --release
+build: install
+	RUSTFLAGS='-C link-arg=-s' cargo build --release
 
 run:
 	cargo run --release
