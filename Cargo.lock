@@ -1229,11 +1229,11 @@ dependencies = [
 
 [[package]]
 name = "fuel-nats"
-version = "0.0.1"
+version = "0.0.2-canary.0"
 
 [[package]]
 name = "fuel-nats-stream"
-version = "0.0.1"
+version = "0.0.2-canary.0"
 dependencies = [
  "anyhow",
  "async-nats",
