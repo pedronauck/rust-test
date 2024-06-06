@@ -76,6 +76,7 @@ jobs:
       - uses: actions/download-artifact@v4.1.7
         with:
           path: artifacts
+          merge-multiple: true
 
       - uses: knope-dev/action@v2.1.0
         with:
