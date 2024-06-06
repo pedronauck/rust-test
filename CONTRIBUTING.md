@@ -9,9 +9,9 @@ Most projects under the umbrella of data systems are written in Rust, so we
 prefer using Rust tooling and community standards. Ensure you have the
 following tools installed:
 
-- [Rust](https://www.rust-lang.org/tools/install)
-- [Make](https://www.gnu.org/software/make/)
-- [Pre-commit](https://pre-commit.com/#install)
+-   [Rust](https://www.rust-lang.org/tools/install)
+-   [Make](https://www.gnu.org/software/make/)
+-   [Pre-commit](https://pre-commit.com/#install)
 
 ## 📟 Setting up
 
@@ -37,12 +37,12 @@ being installed on your machine.
 We enforce some conventions to ensure code quality, sustainability, and
 maintainability. The following tools help us with that:
 
-- [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) -
-  Ensures that commit messages are clear and understandable.
-- [Pre-commit](https://pre-commit.com/) - Ensures that the code is formatted
-  and linted before being committed.
-- [Commitizen](https://commitizen-tools.github.io/commitizen/) - Standardizes
-  commit messages using the Conventional Commits specification.
+-   [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) -
+    Ensures that commit messages are clear and understandable.
+-   [Pre-commit](https://pre-commit.com/) - Ensures that the code is formatted
+    and linted before being committed.
+-   [Commitizen](https://commitizen-tools.github.io/commitizen/) - Standardizes
+    commit messages using the Conventional Commits specification.
 
 ### Writing your commits
 
@@ -51,20 +51,20 @@ Commits](https://www.conventionalcommits.org/en/v1.0.0/) specification. Use
 `category(scope or module): message` in your commit message with one of the
 following categories:
 
-- `feat / feature`: All changes that introduce completely new code or new
-  features.
-- `fix`: Changes that fix a bug (ideally referencing an issue if present).
-- `refactor`: Any code-related change that is not a fix or a feature.
-- `docs`: Changes to existing documentation or creation of new documentation
-  (e.g., README, usage docs).
-- `build`: Changes regarding the build of the software, dependencies, or the
-  addition of new dependencies.
-- `test`: Changes regarding tests (adding new tests or changing existing
-  ones).
-- `ci`: Changes regarding the configuration of continuous integration (e.g.,
-  GitHub Actions, CI systems).
-- `chore`: Changes to the repository that do not fit into any of the above
-  categories.
+-   `feat / feature`: All changes that introduce completely new code or new
+    features.
+-   `fix`: Changes that fix a bug (ideally referencing an issue if present).
+-   `refactor`: Any code-related change that is not a fix or a feature.
+-   `docs`: Changes to existing documentation or creation of new documentation
+    (e.g., README, usage docs).
+-   `build`: Changes regarding the build of the software, dependencies, or the
+    addition of new dependencies.
+-   `test`: Changes regarding tests (adding new tests or changing existing
+    ones).
+-   `ci`: Changes regarding the configuration of continuous integration (e.g.,
+    GitHub Actions, CI systems).
+-   `chore`: Changes to the repository that do not fit into any of the above
+    categories.
 
 ### Using Commitizen
 
@@ -86,17 +86,17 @@ commit message.
 To make your life easier, here are some commands to run common tasks in this
 project:
 
-| Command          | Description                                            |
-| ---------------- | ------------------------------------------------------ |
-| `make build`     | Build the project                                      |
-| `make check`     | Run cargo check                                        |
-| `make dev-watch` | Run the project in development mode with auto-reload   |
-| `make dev`       | Run the project in development mode                    |
-| `make fmt`       | Format the code                                        |
-| `make install`   | Install the project                                    |
-| `make lint`      | Format and lint the code                               |
-| `make run`       | Run the project in release mode                        |
-| `make setup`     | Install all the tools needed                           |
+| Command          | Description                                          |
+| ---------------- | ---------------------------------------------------- |
+| `make build`     | Build the project                                    |
+| `make check`     | Run cargo check                                      |
+| `make dev-watch` | Run the project in development mode with auto-reload |
+| `make dev`       | Run the project in development mode                  |
+| `make fmt`       | Format the code                                      |
+| `make install`   | Install the project                                  |
+| `make lint`      | Format and lint the code                             |
+| `make run`       | Run the project in release mode                      |
+| `make setup`     | Install all the tools needed                         |
 
 ## 📬 Open a Pull Request
 
