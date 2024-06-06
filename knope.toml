@@ -2,9 +2,6 @@
 versioned_files = ["Cargo.toml"]
 changelog = "CHANGELOG.md"
 
-[[package.assets]]
-path = "artifacts/fuel-nats-stream-x86_64-unknown-linux-gnu"
-
 # ------------------------------------------------------------
 # Workflow to get the current version
 # ------------------------------------------------------------
