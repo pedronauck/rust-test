@@ -1,0 +1,85 @@
+name: Release
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [main, staging, release]
+
+jobs:
+  push_tag:
+    if: startsWith(github.head_ref, 'releases/') && github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.REPO_TOKEN }}
+
+      - uses: knope-dev/action@v2.1.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - run: |
+          version="v$(knope get-version)"
+          git tag "${version}"
+          git push origin main --tags
+          echo "Tag v${version} pushed successfully!"
+
+  build-artifacts:
+    needs: [push_tag]
+    env:
+      archive_name: artifact
+
+    strategy:
+      fail-fast: false
+      matrix:
+        pkg: [fuel-nats-stream]
+        os: [ubuntu-latest]
+        target: [x86_64-unknown-linux-gnu]
+
+    runs-on: ${{ matrix.os }}
+    name: ${{ matrix.pkg }} ${{ matrix.target }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Install host target
+        run: rustup target add ${{ matrix.target }}
+
+      - name: Build
+        run: make build TARGET=${{ matrix.target }} PACKAGE=${{ matrix.pkg }}
+
+      - name: Set Archive Name
+        id: archive
+        run: echo "archive_name=${{ matrix.pkg }}-${{ matrix.target }}" >> $GITHUB_ENV
+
+      - name: Create Tar Archive
+        run: |
+          mkdir ${{ env.archive_name }}
+          cp target/${{ matrix.target }}/release/${{ matrix.pkg }} ${{ env.archive_name }}
+          tar -czf ${{ env.archive_name }}.tgz ${{ env.archive_name }}
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4.3.3
+        with:
+          name: ${{ matrix.pkg }}-${{ matrix.target }}
+          path: ${{ env.archive_name }}.tgz
+          if-no-files-found: error
+
+  release:
+    needs: [build-artifacts]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.1.6
+      - uses: actions/download-artifact@v4.1.7
+        with:
+          path: artifacts
+
+      - uses: knope-dev/action@v2.1.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - run: knope release
+        env:
+          GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
