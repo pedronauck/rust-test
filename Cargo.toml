@@ -1,6 +1,6 @@
 [package]
 name = "fuel-nats"
-version = "0.0.2-canary.3"
+version = "0.0.2"
 
 [workspace]
 members = ["crates/nats-stream"]
@@ -13,7 +13,7 @@ edition = "2021"
 homepage = "https://fuel.network/"
 license = "Apache-2.0"
 repository = "https://github.com/FuelLabs/data-systems"
-version = "0.0.2-canary.3"
+version = "0.0.2"
 
 [workspace.dependencies]
 anyhow = "1.0"
