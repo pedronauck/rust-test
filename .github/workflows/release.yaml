@@ -8,6 +8,8 @@ on:
 jobs:
   build-artifacts:
     if: startsWith(github.head_ref, 'releases/') && github.event.pull_request.merged == true
+    env:
+      archive_name: artifact
     strategy:
       fail-fast: false
       matrix:
@@ -20,46 +22,24 @@ jobs:
             os: macos-latest
           - target: x86_64-pc-windows-msvc
             os: windows-latest
-    env:
-      archive_name: artifact
+        package: [fuel-nats-stream]
 
     runs-on: ${{ matrix.os }}
-    name: ${{ matrix.target }}
+    name: ${{ matrix.package }} (${{ matrix.target }})
 
     steps:
       - uses: actions/checkout@v4
       - uses: Swatinem/rust-cache@v2
-      - name: Install host target
-        run: rustup target add ${{ matrix.target }}
 
-      - name: Install musl-tools
-        if: ${{ matrix.target == 'x86_64-unknown-linux-musl' }}
-        run: sudo apt-get install -y musl-tools
+      - name: Build ${{ matrix.package }}
+        run: |
+          make build PKG=${{ matrix.package }} TARGET=${{ matrix.target }} OS=${{ matrix.os }}
 
-      - name: Build
-        run: cargo build --release --target ${{ matrix.target }}
-
-      - name: Set Archive Name (Non-Windows)
-        id: archive
-        run: echo "archive_name=knope-${{ matrix.target }}" >> $GITHUB_ENV
-
-      - name: Set Archive Name (Windows)
-        if: ${{ matrix.os == 'windows-latest' }}
-        run: echo "archive_name=knope-${{ matrix.target }}" | Out-File -FilePath $Env:GITHUB_ENV -Encoding
-          utf8 -Append
-
-      - name: Create Archive Folder
-        run: mkdir ${{ env.archive_name }}
-
-      - name: Copy Unix Artifact
-        if: ${{ matrix.os != 'windows-latest' }}
-        run: cp target/${{ matrix.target }}/release/knope ${{ env.archive_name }}
-
-      - name: Upload Artifact
+      - name: Upload ${{ matrix.package }} Artifact
         uses: actions/upload-artifact@v4.3.3
         with:
-          name: ${{ matrix.target }}
-          path: ${{ env.archive_name }}.tgz
+          name: ${{ matrix.package }}-${{ matrix.target }}
+          path: release/${{ matrix.package }}-${{ matrix.target }}*
           if-no-files-found: error
 
   release:

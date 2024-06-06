@@ -15,6 +15,7 @@ env:
 
 jobs:
   setup:
+    if: "!startsWith(github.event.head_commit.message, 'ci(bump)')"
     runs-on: ubuntu-latest
     outputs:
       release_type: ${{ steps.set-release.outputs.type }}
@@ -42,7 +43,7 @@ jobs:
           type="${{ steps.set-release.outputs.type }}"
           echo "branch=releases/${type}" >> $GITHUB_OUTPUT
 
-  prepare-pr:
+  prepare-release:
     if: "!startsWith(github.event.head_commit.message, 'ci(bump)')"
     needs: setup
     runs-on: ubuntu-latest

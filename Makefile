@@ -2,6 +2,16 @@
 #  Setup
 # ------------------------------------------------------------
 
+PKG ?=
+OS ?= macos-latest
+TARGET ?= aarch64-apple-darwin
+TARGET_DIR ?= target/$(TARGET)/release
+RELEASE_DIR ?= release
+
+.PHONY: all build run clean lint fmt help test doc
+
+all: build
+
 install:
 	cargo fetch
 
@@ -23,10 +33,14 @@ dev-watch:
 # ------------------------------------------------------------
 
 build: install
-	RUSTFLAGS='-C link-arg=-s' cargo build --release
+	./scripts/build.sh "$(PKG)" "$(OS)" "$(TARGET)" "$(RELEASE_DIR)"
 
 run:
 	cargo run --release
+
+clean:
+	cargo clean
+	rm -rf "$(RELEASE_DIR)"
 
 # ------------------------------------------------------------
 # Format
@@ -63,3 +77,35 @@ lint-clippy:
 
 lint-markdown:
 	npx prettier *.md **/*.md --check --no-error-on-unmatched-pattern
+
+# ------------------------------------------------------------
+# Test
+# ------------------------------------------------------------
+
+test:
+	cargo test --all
+
+# ------------------------------------------------------------
+# Documentation
+# ------------------------------------------------------------
+
+doc:
+	cargo doc --no-deps
+
+# ------------------------------------------------------------
+# Help
+# ------------------------------------------------------------
+
+help:
+	@echo "Available commands:"
+	@echo "  install   - Install project dependencies"
+	@echo "  setup     - Run the setup script"
+	@echo "  dev       - Run the project in development mode"
+	@echo "  dev-watch - Run the project in development mode with auto-reload"
+	@echo "  build     - Build the project"
+	@echo "  run       - Run the project in release mode"
+	@echo "  clean     - Clean the build artifacts and release directory"
+	@echo "  fmt       - Format the code and Markdown files"
+	@echo "  lint      - Perform linting checks on the code and Markdown files"
+	@echo "  test      - Run tests"
+	@echo "  doc       - Generate documentation"
