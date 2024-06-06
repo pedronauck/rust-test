@@ -2,7 +2,12 @@
 versioned_files = []
 changelog = "CHANGELOG.md"
 
+[[package.assets]]
+path = "artifact/fuel-nats-stream-x86_64-unknown-linux-gnu"
+
+# ------------------------------------------------------------
 # Workflow to get the current version
+# ------------------------------------------------------------
 [[workflows]]
 name = "get-version"
 help_text = "Get the current version of the project"
@@ -12,14 +17,18 @@ type = "Command"
 command = "echo \"$VERSION\""
 variables = { "$VERSION" = "Version" }
 
+# ------------------------------------------------------------
 # Workflow to create a new changeset
+# ------------------------------------------------------------
 [[workflows]]
 name = "changeset"
 
 [[workflows.steps]]
 type = "CreateChangeFile"
 
+# ------------------------------------------------------------
 # Workflow to create a new release
+# ------------------------------------------------------------
 [[workflows]]
 name = "prepare-release"
 
@@ -52,12 +61,25 @@ type = "CreatePullRequest"
 base = "main"
 
 [workflows.steps.title]
-template = "chore: prepare release $VERSION"
+template = "ci(bump): prepare release $VERSION"
 variables = { "$VERSION" = "Version" }
 
 [workflows.steps.body]
 template = "This PR was created by Knope. Merging it will create a new release"
 
+# ------------------------------------------------------------
+# Workflow to release a new version
+# ------------------------------------------------------------
+[[workflows]]
+name = "release"
+
+[[workflows.steps]]
+type = "Release"
+variables = { "$VERSION" = "Version" }
+
+# ------------------------------------------------------------
+# GitHub configuration
+# ------------------------------------------------------------
 [github]
 owner = "pedronauck"
 repo = "rust-test"
