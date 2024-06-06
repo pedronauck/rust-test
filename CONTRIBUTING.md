@@ -12,6 +12,7 @@ following tools installed:
 -   [Rust](https://www.rust-lang.org/tools/install)
 -   [Make](https://www.gnu.org/software/make/)
 -   [Pre-commit](https://pre-commit.com/#install)
+-   [NodeJS](https://nodejs.org/en/download/)
 
 ## 📟 Setting up
 
@@ -41,8 +42,6 @@ maintainability. The following tools help us with that:
     Ensures that commit messages are clear and understandable.
 -   [Pre-commit](https://pre-commit.com/) - Ensures that the code is formatted
     and linted before being committed.
--   [Commitizen](https://commitizen-tools.github.io/commitizen/) - Standardizes
-    commit messages using the Conventional Commits specification.
 
 ### Writing your commits
 
@@ -51,7 +50,7 @@ Commits](https://www.conventionalcommits.org/en/v1.0.0/) specification. Use
 `category(scope or module): message` in your commit message with one of the
 following categories:
 
--   `feat / feature`: All changes that introduce completely new code or new
+-   `feat`: All changes that introduce completely new code or new
     features.
 -   `fix`: Changes that fix a bug (ideally referencing an issue if present).
 -   `refactor`: Any code-related change that is not a fix or a feature.
@@ -66,37 +65,22 @@ following categories:
 -   `chore`: Changes to the repository that do not fit into any of the above
     categories.
 
-### Using Commitizen
-
-Commitizen helps you create commit messages that follow the Conventional
-Commits specification. To use Commitizen, refer to the [Commitizen installation
-guide](https://commitizen-tools.github.io/commitizen/).
-
-Once installed, create your commit using the following command:
-
-```sh
-cz commit
-```
-
-Commitizen will guide you through the process of creating a standardized
-commit message.
-
 ## 📜 Useful Commands
 
 To make your life easier, here are some commands to run common tasks in this
 project:
 
-| Command          | Description                                          |
-| ---------------- | ---------------------------------------------------- |
-| `make build`     | Build the project                                    |
-| `make check`     | Run cargo check                                      |
-| `make dev-watch` | Run the project in development mode with auto-reload |
-| `make dev`       | Run the project in development mode                  |
-| `make fmt`       | Format the code                                      |
-| `make install`   | Install the project                                  |
-| `make lint`      | Format and lint the code                             |
-| `make run`       | Run the project in release mode                      |
-| `make setup`     | Install all the tools needed                         |
+| Command          | Description                                           |
+| ---------------- | ----------------------------------------------------- |
+| `make build`     | Build the project with default settings               |
+| `make clean`     | Clean the build artifacts and release directory       |
+| `make dev-watch` | Run the project in development mode with auto-reload  |
+| `make dev`       | Run the project in development mode                   |
+| `make fmt`       | Format the code and Markdown files                    |
+| `make install`   | Fetch the project dependencies using `cargo fetch`    |
+| `make lint`      | Perform linting checks on the code and Markdown files |
+| `make run`       | Run the built executable using `cargo run --release`  |
+| `make setup`     | Run the setup script located at `./scripts/setup.sh`  |
 
 ## 📬 Open a Pull Request
 

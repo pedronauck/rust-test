@@ -1,0 +1,56 @@
+name: Release
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [main, staging, release]
+
+jobs:
+  build-artifacts:
+    if: startsWith(github.head_ref, 'releases/') && github.event.pull_request.merged == true
+    env:
+      archive_name: artifact
+
+    strategy:
+      fail-fast: false
+      matrix:
+        package: [fuel-nats-stream]
+        os: [ubuntu-latest, macos-latest]
+        target:
+          - x86_64-unknown-linux-gnu
+          - aarch64-unknown-linux-gnu
+          - x86_64-apple-darwin
+          - aarch64-apple-darwin
+
+    runs-on: ${{ matrix.os }}
+    name: ${{ matrix.package }} (${{ matrix.target }})
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Build ${{ matrix.package }}
+        run: |
+          make build PKG=${{ matrix.package }} TARGET=${{ matrix.target }} OS=${{ matrix.os }}
+
+      - name: Upload ${{ matrix.package }} Artifact
+        uses: actions/upload-artifact@v4.3.3
+        with:
+          name: ${{ matrix.package }}-${{ matrix.target }}
+          path: release/${{ matrix.package }}-${{ matrix.target }}*
+          if-no-files-found: error
+
+  release:
+    needs: [build-artifacts]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.1.6
+      - uses: actions/download-artifact@v4.1.7
+        with:
+          path: artifacts
+      - uses: knope-dev/action@v2.1.0
+        with:
+          version: 0.13.0
+      - run: knope release
+        env:
+          GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
