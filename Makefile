@@ -1,8 +1,16 @@
-build:
-	cargo build --release
+# ------------------------------------------------------------
+#  Setup
+# ------------------------------------------------------------
 
-check:
-	cargo check --all-targets --all-features
+install:
+	cargo fetch
+
+setup:
+	./scripts/setup.sh
+
+# ------------------------------------------------------------
+#  Development
+# ------------------------------------------------------------
 
 dev:
 	cargo run
@@ -10,18 +18,37 @@ dev:
 dev-watch:
 	cargo watch -- cargo run
 
-fmt:
-	cargo fmt -- --check --color always
+# ------------------------------------------------------------
+# Build & Release
+# ------------------------------------------------------------
 
-install:
-	cargo fetch
-
-lint:
-	pre-commit run --all-files
-	pre-commit run --hook-stage manual clippy --all-files
+build:
+	cargo build --release
 
 run:
 	cargo run --release
 
-setup:
-	./scripts/install.sh
+# ------------------------------------------------------------
+# Format
+# ------------------------------------------------------------
+
+fmt: fmt-rust fmt-markdown
+
+fmt-rust:
+	cargo +nightly fmt -- --color always
+
+fmt-markdown:
+	npx prettier *.md **/*.md --write --no-error-on-unmatched-pattern
+
+# ------------------------------------------------------------
+# Validate code
+# ------------------------------------------------------------
+
+check:
+	cargo check --all-targets --all-features
+
+lint:
+	pre-commit run --all-files
+
+lint-clippy:
+	cargo clippy --workspace -- -D warnings
