@@ -49,7 +49,6 @@ jobs:
         uses: ./.github/actions/setup-rust
         with:
           toolchain: stable
-          targets: wasm32-unknown-unknown
 
       - uses: Swatinem/rust-cache@v2
       - run: cargo update --workspace --locked
@@ -89,7 +88,6 @@ jobs:
         uses: ./.github/actions/setup-rust
         with:
           toolchain: nightly
-          targets: wasm32-unknown-unknown
 
       - name: Install dependencies
         uses: taiki-e/cache-cargo-install-action@v2

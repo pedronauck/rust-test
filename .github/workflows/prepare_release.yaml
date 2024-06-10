@@ -48,7 +48,6 @@ jobs:
         uses: ./.github/actions/setup-rust
         with:
           toolchain: nightly
-          target: wasm32-unknown-unknown
 
       - uses: taiki-e/cache-cargo-install-action@v2
         with:
