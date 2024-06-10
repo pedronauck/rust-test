@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.0.4 (2024-06-10)
+
+### Features
+
+-   testing feat
+-   testing
+-   blablabla
+-   fofofo
+
+### Fixes
+
+-   testin
+-   ci
+
 ## 0.0.3 (2024-06-07)
 
 ### Features
