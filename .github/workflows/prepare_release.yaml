@@ -32,9 +32,6 @@ jobs:
     if: "!startsWith(github.event.head_commit.message, 'ci(release)')"
     needs: setup
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      actions: write
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
