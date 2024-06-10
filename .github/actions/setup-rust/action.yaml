@@ -22,7 +22,7 @@ runs:
         components: clippy, rustfmt
 
     - name: Cache Rust toolchain
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: |
           ~/.rustup
@@ -30,7 +30,7 @@ runs:
         key: ${{ runner.os }}-rust-${{ inputs.toolchain }}-${{ inputs.target }}
 
     - name: Cache Cargo dependencies
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: |
           ~/.cargo/registry
