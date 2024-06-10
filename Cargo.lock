@@ -2179,7 +2179,7 @@ dependencies = [
 
 [[package]]
 name = "fuel-core-nats"
-version = "0.0.3"
+version = "0.0.4"
 dependencies = [
  "anyhow",
  "async-nats",
@@ -2455,7 +2455,7 @@ dependencies = [
 
 [[package]]
 name = "fuel-nats"
-version = "0.0.3"
+version = "0.0.4"
 
 [[package]]
 name = "fuel-storage"
