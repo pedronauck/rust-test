@@ -83,5 +83,5 @@ variables = { "$VERSION" = "Version" }
 # GitHub configuration
 # ------------------------------------------------------------
 [github]
-owner = "fuellabs"
+owner = "pedronauck"
 repo = "rust-test"
