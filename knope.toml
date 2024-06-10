@@ -3,7 +3,7 @@ versioned_files = ["Cargo.toml"]
 changelog = "CHANGELOG.md"
 
 [[package.assets]]
-path = "artifacts/fuel-nats-stream-x86_64-unknown-linux-gnu.tgz"
+path = "artifacts/fuel-core-nats-x86_64-unknown-linux-gnu.tgz"
 
 # ------------------------------------------------------------
 # Workflow to get the current version
@@ -48,7 +48,7 @@ shell = true
 
 [[workflows.steps]]
 type = "Command"
-command = "git commit -m \"ci(bump): prepare release $VERSION\""
+command = "git commit -m \"ci(release): preparing $VERSION\""
 variables = { "$VERSION" = "Version" }
 
 [[workflows.steps]]
@@ -62,7 +62,7 @@ base = "main"
 variables = { "$VERSION" = "Version" }
 
 [workflows.steps.title]
-template = "ci(bump): prepare release $VERSION"
+template = "ci(release): preparing v$VERSION"
 variables = { "$VERSION" = "Version" }
 
 [workflows.steps.body]
@@ -83,5 +83,5 @@ variables = { "$VERSION" = "Version" }
 # GitHub configuration
 # ------------------------------------------------------------
 [github]
-owner = "pedronauck"
+owner = "fuellabs"
 repo = "rust-test"

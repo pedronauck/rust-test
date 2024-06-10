@@ -1,7 +1,7 @@
 max_width = 90
 normalize_comments = true
-imports_granularity = "Crate"
 imports_layout = "Vertical"
+imports_granularity = "Crate"
 trailing_semicolon = false
 use_try_shorthand = true
 edition = "2021"
