@@ -25,7 +25,7 @@ jobs:
       - name: Install Rust
         uses: ./.github/actions/setup-rust
         with:
-          toolchain: nightly
+          toolchain: stable
           target: wasm32-unknown-unknown
 
       - name: Install host target
