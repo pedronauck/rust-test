@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.0.5 (2024-06-14)
+
+### Features
+
+-   blabla
+
 ## 0.0.4 (2024-06-10)
 
 ### Features
