@@ -12,6 +12,8 @@ Official data stream and indexing projects on Fuel Network
 </p>
 </div>
 
+blablabla
+
 ## 📝 About The Project
 
 Within this repository, you will find the official data stream and indexing
