@@ -1,7 +1,20 @@
 [packages.fuel-core-nats]
 versioned_files = ["crates/fuel-core-nats/Cargo.toml"]
 changelog = "CHANGELOG.md"
-extra_changelog_sections = [{ name = "Documentation", types = ["docs"] }]
+extra_changelog_sections = [
+  { types = [
+    "major",
+  ], name = "⚠️ Breaking" },
+  { types = [
+    "minor",
+  ], name = "🚀 Features" },
+  { types = [
+    "patch",
+  ], name = "🐛 Fixes" },
+  { footers = [
+    "Changelog-Note",
+  ], name = "📝 Notes" },
+]
 
 # ------------------------------------------------------------
 # Workflow to get the current version
