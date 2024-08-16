@@ -11,7 +11,7 @@ extra_changelog_sections = [
   { types = [
     "patch",
   ], name = "🐛 Fixes" },
-  { name = "Refactor", footers = [
+  { name = "📬 Refactor", footers = [
     "Refactor",
   ], types = [
     "refactor",
