@@ -1,6 +1,5 @@
 [package]
 name = "fuel-core-nats"
-version = { workspace = true }
 authors = { workspace = true }
 edition = { workspace = true }
 homepage = { workspace = true }
@@ -8,6 +7,7 @@ keywords = { workspace = true }
 license = { workspace = true }
 repository = { workspace = true }
 description = "Fuel library to handle data streams using Nats"
+version = "0.0.4"
 
 [dependencies]
 anyhow = "1.0.86"
