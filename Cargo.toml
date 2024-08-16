@@ -17,10 +17,10 @@ clap = { version = "4.5", features = ["derive"] }
 futures = "0.3"
 tokio = { version = "1.38", features = ["full"] }
 fuel-core-bin = { version = "0.27", features = [
-    "env",
-    "p2p",
-    "relayer",
-    "rocksdb",
+  "env",
+  "p2p",
+  "relayer",
+  "rocksdb",
 ] }
 fuel-core = { version = "0.27", features = ["p2p", "relayer", "rocksdb"] }
 fuel-core-types = { version = "0.27" }
