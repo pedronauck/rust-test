@@ -16,7 +16,7 @@ blablabla
 
 ## 📝 About The Project
 
-Within this repository, you will find the official data stream and indexing
+This repository, you will find the official data stream and indexing
 projects for the Fuel Network. These projects are responsible for indexing and
 storing data from the Fuel Network and providing a public API and SDK for querying
 and subscribing to Fuel Network data.
