@@ -1,5 +1,33 @@
 # Changelog
 
+## 0.0.5 (2024-08-16)
+
+### Features
+
+-   test feature
+-   testing feat
+-   testing
+-   blablabla
+-   fofofo
+-   remove wasm
+-   blabla
+
+### Fixes
+
+-   release pedro
+-   ci action
+-   test
+-   another test
+-   testin
+-   ci
+-   release
+-   wasm
+-   test
+-   test
+-   test
+-   test
+-   test new
+
 ## 0.0.4 (2024-06-10)
 
 ### Features
