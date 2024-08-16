@@ -3,7 +3,7 @@ versioned_files = ["crates/knope/Cargo.toml"]
 changelog = "CHANGELOG.md"
 extra_changelog_sections = [{ name = "Documentation", types = ["docs"] }]
 
-[[package.fuel-core-nats.assets]]
+[[packages.fuel-core-nats.assets]]
 path = "artifacts/fuel-core-nats-x86_64-unknown-linux-gnu.tgz"
 
 # ------------------------------------------------------------
