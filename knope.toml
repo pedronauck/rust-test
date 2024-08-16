@@ -10,7 +10,7 @@ path = "artifacts/fuel-core-nats-x86_64-unknown-linux-gnu.tgz"
 # ------------------------------------------------------------
 [[workflows]]
 name = "get-version"
-help_text = "Get the current version of the project"
+help_text = "Get the current version of the a project"
 
 [[workflows.steps]]
 type = "Command"
