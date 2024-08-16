@@ -1,5 +1,5 @@
 [package]
-versioned_files = ["Cargo.toml"]
+versioned_files = ["./crates/fuel-core-nats/Cargo.toml"]
 changelog = "CHANGELOG.md"
 
 [[package.assets]]
