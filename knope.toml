@@ -1,5 +1,5 @@
 [packages.fuel-core-nats]
-versioned_files = ["crates/knope/Cargo.toml"]
+versioned_files = ["crates/fuel-core-nats/Cargo.toml"]
 changelog = "CHANGELOG.md"
 extra_changelog_sections = [{ name = "Documentation", types = ["docs"] }]
 
