@@ -3,9 +3,6 @@ versioned_files = ["crates/fuel-core-nats/Cargo.toml"]
 changelog = "CHANGELOG.md"
 extra_changelog_sections = [{ name = "Documentation", types = ["docs"] }]
 
-[[packages.fuel-core-nats.assets]]
-path = "artifacts/fuel-core-nats-x86_64-unknown-linux-gnu.tgz"
-
 # ------------------------------------------------------------
 # Workflow to get the current version
 # ------------------------------------------------------------
