@@ -1,6 +1,7 @@
-[package]
-versioned_files = ["./crates/fuel-core-nats/Cargo.toml"]
+[packages.knope]
+versioned_files = ["crates/knope/Cargo.toml"]
 changelog = "CHANGELOG.md"
+extra_changelog_sections = [{ name = "Documentation", types = ["docs"] }]
 
 [[package.assets]]
 path = "artifacts/fuel-core-nats-x86_64-unknown-linux-gnu.tgz"
@@ -85,3 +86,6 @@ variables = { "$VERSION" = "Version" }
 [github]
 owner = "pedronauck"
 repo = "rust-test"
+
+[bot.releases]
+enabled = true
