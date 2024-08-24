@@ -1,14 +1,14 @@
 <br/>
 <div align="center">
-<a href="https://github.com/fuellabs/data-systems">
+<a href="https://github.com/pedronauck/rust-test">
 <img src="https://global.discourse-cdn.com/business6/uploads/fuel/original/2X/5/57d5a345cc15a64b636e0d56e042857f8a0e80b1.png" alt="Logo" width="80" height="80">
 </a>
 <h3 align="center">Fuel Data Systems</h3>
 <p align="center">
 Official data stream and indexing projects on Fuel Network
 <br/>
-<a href="https://github.com/fuellabs/data-systems/issues/new?labels=bug&template=bug-report---.md">Report Bug .</a>
-<a href="https://github.com/fuellabs/data-systems/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
+<a href="https://github.com/pedronauck/rust-test/issues/new?labels=bug&template=bug-report---.md">Report Bug .</a>
+<a href="https://github.com/pedronauck/rust-test/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
 </p>
 </div>
 

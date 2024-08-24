@@ -19,7 +19,7 @@ following tools installed:
 First, clone this repository:
 
 ```sh
-git clone git@github.com:fuellabs/data-systems.git
+git clone git@github.com:pedronauck/rust-test.git
 cd data-systems
 ```
 
