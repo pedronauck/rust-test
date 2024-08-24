@@ -17,7 +17,7 @@ extra_changelog_sections = [
 ]
 
 [[packages.fuel-streams.assets]]
-path = "artifacts/fuel-streams-publisher-macOS-aarch64"
+path = "artifacts/fuel-streams-publisher-macOS-aarch64.tar.gz"
 
 # ------------------------------------------------------------
 # Workflow to get the current version
