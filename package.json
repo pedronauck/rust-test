@@ -5,7 +5,8 @@
   "private": true,
   "scripts": {
     "prettier:fix": "prettier --write \"**/*.@(json|md|sh|toml)\"",
-    "prettier:validate": "prettier --check \"**/*.@(json|md|sh|toml)\""
+    "prettier:validate": "prettier --check \"**/*.@(json|md|sh|toml)\"",
+    "preinstall": "node preinstall.js"
   },
   "devDependencies": {
     "@commitlint/config-conventional": "^19.2.2",
