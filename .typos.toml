@@ -1,2 +1,2 @@
-[default]
-extend-ignore-identifiers-re = ["TRO", "tro", "Tro"]
+[files]
+extend-exclude = ["crates/fuel-streams-publisher/README.md", "docker/chain-config", "helm"]

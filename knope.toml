@@ -1,0 +1,116 @@
+[packages.fuel-streams]
+versioned_files = ["crates/fuel-streams/Cargo.toml"]
+changelog = "CHANGELOG.md"
+extra_changelog_sections = [
+    { types = [
+        "major",
+    ], name = "⚠️ Breaking Change" },
+    { types = [
+        "minor",
+    ], name = "🚀 Features" },
+    { types = [
+        "patch",
+    ], name = "🐛 Fixes" },
+    { footers = [
+        "Changelog-Note",
+    ], name = "📝 Notes" },
+]
+
+[[packages.fuel-streams.assets]]
+path = "artifacts/fuel-streams-publisher-Linux-aarch64-gnu"
+
+[[packages.fuel-streams.assets]]
+path = "artifacts/fuel-streams-publisher-Linux-aarch64-musl"
+
+[[packages.fuel-streams.assets]]
+path = "artifacts/fuel-streams-publisher-Linux-x86_64-gnu"
+
+[[packages.fuel-streams.assets]]
+path = "artifacts/fuel-streams-publisher-Linux-x86_64-musl"
+
+[[packages.fuel-streams.assets]]
+path = "artifacts/fuel-streams-publisher-macOS-aarch64"
+
+[[packages.fuel-streams.assets]]
+path = "artifacts/fuel-streams-publisher-macOS-x86_64"
+
+# ------------------------------------------------------------
+# Workflow to get the current version
+# ------------------------------------------------------------
+[[workflows]]
+name = "get-version"
+help_text = "Get the current version of the project"
+
+[[workflows.steps]]
+type = "Command"
+command = "echo \"$VERSION\""
+variables = { "$VERSION" = "Version" }
+
+# ------------------------------------------------------------
+# Workflow to create a new changeset
+# ------------------------------------------------------------
+[[workflows]]
+name = "changeset"
+
+[[workflows.steps]]
+type = "CreateChangeFile"
+
+# ------------------------------------------------------------
+# Workflow to create a new release
+# ------------------------------------------------------------
+[[workflows]]
+name = "prepare-release"
+
+[[workflows.steps]]
+type = "PrepareRelease"
+
+[[workflows.steps]]
+type = "Command"
+command = "git switch -c $RELEASE_BRANCH"
+shell = true
+
+[[workflows.steps]]
+type = "Command"
+command = "./scripts/bump-version.sh $VERSION && git add ."
+variables = { "$VERSION" = "Version" }
+shell = true
+
+[[workflows.steps]]
+type = "Command"
+command = "git commit -m \"ci(release): Preparing $VERSION\""
+variables = { "$VERSION" = "Version" }
+
+[[workflows.steps]]
+type = "Command"
+command = "git push --force --set-upstream origin $RELEASE_BRANCH"
+shell = true
+
+[[workflows.steps]]
+type = "CreatePullRequest"
+base = "main"
+variables = { "$VERSION" = "Version" }
+
+[workflows.steps.title]
+template = "ci(release): Preparing v$VERSION"
+variables = { "$VERSION" = "Version" }
+
+[workflows.steps.body]
+template = "v$VERSION"
+variables = { "$VERSION" = "Version" }
+
+# ------------------------------------------------------------
+# Workflow to release a new version
+# ------------------------------------------------------------
+[[workflows]]
+name = "release"
+
+[[workflows.steps]]
+type = "Release"
+variables = { "$VERSION" = "Version" }
+
+# ------------------------------------------------------------
+# GitHub configuration
+# ------------------------------------------------------------
+[github]
+owner = "pedronauck"
+repo = "rust-test"

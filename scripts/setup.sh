@@ -1,19 +1,20 @@
 #!/bin/bash
 
-# Check if a command exists using which
-check_command() {
-    if ! which "$1" >/dev/null 2>&1; then
-        echo "$1 is not installed. Please install $1 and try again."
-        exit 1
-    fi
-}
-
-# Check if Rust is installed
-check_command rustup
-# Check if pre-commit is installed
-check_command pre-commit
-
 # Install pre-commit hooks
 pre-commit install
-# Install cargo watch
-cargo install cargo-watch
+
+# Install PNPM as package manager for NodeJS if it doesn't exist
+if ! command -v pnpm &> /dev/null; then
+    npm install -g pnpm
+fi
+
+pnpm install
+
+# Install fixed nightly toolchain
+rustup toolchain install nightly-2024-07-28 -c rustfmt
+
+# Install cargo global crates
+cargo install cargo-binstall
+cargo install cargo-tarpaulin
+cargo install cargo-audit --locked --features=fix
+cargo binstall --no-confirm cargo-watch knope cargo-sort typos-cli
