@@ -106,7 +106,7 @@ jobs:
       - name: Run Knope Action
         uses: knope-dev/action@v2.1.0
         with:
-          GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
+          github-token: ${{ secrets.REPO_TOKEN }}
 
       - name: Knope Release
         run: knope release
